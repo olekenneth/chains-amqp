@@ -1,0 +1,31 @@
+{
+    "name": "chains-amqp",
+    "description": "This package is an abstract class for Chains NodeJS-devices.",
+    "author": {
+        "name": "Ole-Kenneth Rangnes",
+        "email": "ok@rait.no",
+        "url": "http://olekenneth.com"
+    },
+    "main" : "amqp",
+    "version" : "1.0.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/olekenneth/chains-amqp.git"
+    },
+    "dependencies": {
+        "amqp": "0.2.0",
+        "lodash": "*"
+    },
+    "keywords": [
+        "chains",
+        "homeautomation",
+        "home",
+        "automation",
+        "rabbitmq",
+        "amqp",
+        "advanced",
+        "message",
+        "queing"
+    ],
+    "license": "MIT"
+}
