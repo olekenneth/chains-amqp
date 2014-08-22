@@ -1,13 +1,14 @@
 var rabbitmq     = require('amqp')
   , util         = require('util')
+  , _            = require('lodash')
   , eventEmitter = require('events').EventEmitter;
 
 var RabbitMQ = function(options) {
-    if (!options) options = {};
-    if (!options.host)            options.host            = 'localhost';
-    if (!options.prefix)          options.prefix          = 'chains';
-    if (!options.deviceName)      options.deviceName      = 'unnamed-device';
-    if (!options.defaultExchange) options.defaultExchange = options.prefix;
+    options = _.defaults(options || {}, 
+               { host: 'localhost', 
+                 prefix: 'chains',
+                 deviceName: 'unnamed-device',
+                 defaultExchange: 'chains' });
     
     var self = this;
     var connection = rabbitmq.createConnection({ host: options.host }, {defaultExchangeName: options.defaultExchange});
@@ -15,7 +16,7 @@ var RabbitMQ = function(options) {
     connection.on('ready', function () {
         connection.queue(options.prefix + '.device-' + options.deviceName, {exclusive: true }, function(queue){
             // Binding all da.deviceName.* topic messages to 
-            // be routed into chains.device-deviceName-queue
+            // be routed into chains.device-deviceName queue
             queue.bind(options.prefix, 'da.' + options.deviceName  + '.*');
 
             self.emit('ready', connection);
@@ -47,6 +48,10 @@ var RabbitMQ = function(options) {
     this.sendResponse = function(action, actionId, response) {
         if (!response) response = null;
         connection.publish('dr.' + options.deviceName + '.' + action, response, {correlationId: actionId});
+    };
+
+    this.sendEvent = function(event, data) {
+        connection.publish('de.' + options.deviceName + '.' + event, {device: options.deviceName, data: data, key: event});
     };
 };
 util.inherits(RabbitMQ, eventEmitter);
