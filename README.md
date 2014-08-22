@@ -11,16 +11,19 @@ This package is an abstract class for Chains NodeJS-devices. It requires `node-a
 
 Or put this in your `package.json`
 
-    "dependencies": {
-            "chains-amqp": "*"
-                }
-
+```javascript
+"dependencies": {
+    "chains-amqp": "*"
+}
+```
 
 ## USAGE
 
 If you are going to create a new Chains-device. You can do it like this:
 
 ### Example one
+
+```javascript
     var amqp = require('chains-amqp').connect({deviceName: 'xcomfort'});
 
     amqp.on('on', function(deviceId, actionId) {
@@ -32,8 +35,10 @@ If you are going to create a new Chains-device. You can do it like this:
             amqp.sendResponse('on', actionId);
         }
     });
-
+```
 ### Example two
+
+```javascript
     var amqp = require('chains-amqp').connect({deviceName: 'xcomfort'});
 
     amqp.on('describe', function(deviceId, actionId) {
@@ -61,7 +66,8 @@ If you are going to create a new Chains-device. You can do it like this:
             'events': events
         });
     });
-    
+```
+
 ## LICENSE
 
 MIT, see the LICENSE file
