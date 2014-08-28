@@ -10,8 +10,14 @@ var RabbitMQ = function(options) {
                  deviceName: 'unnamed-device',
                  defaultExchange: 'chains' });
     
-    var self = this;
-    var connection = rabbitmq.createConnection({ host: options.host }, {defaultExchangeName: options.defaultExchange});
+    var self = this,
+        connection = rabbitmq.createConnection({ host: options.host }, {defaultExchangeName: options.defaultExchange}),
+        heartBeatInterval;
+
+    connection.on('error', function(error) {
+        self.emit('error', error);
+        console.error('Error when connecting to amqp', error, 'With options: ', options);
+    });
 
     connection.on('ready', function () {
         connection.queue(options.prefix + '.device-' + options.deviceName, {exclusive: true }, function(queue){
@@ -22,7 +28,8 @@ var RabbitMQ = function(options) {
             self.emit('ready', connection);
 
             // Sending heart beat every 5 sec
-            setInterval(function() {
+            clearInterval(heartBeatInterval);
+            heartBeatInterval = setInterval(function() {
                 connection.publish('dh.' + options.deviceName, JSON.stringify(2));
             }, 5000);
 
